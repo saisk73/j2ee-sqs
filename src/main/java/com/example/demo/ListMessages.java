@@ -17,8 +17,9 @@ import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
+import com.google.gson.*;
 
-@WebServlet(name = "listMessages", value = "/list-messages")
+
 public class ListMessages extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -32,18 +33,21 @@ public class ListMessages extends HttpServlet {
                 .withVisibilityTimeout(20)
                 .withMaxNumberOfMessages(10);
         ArrayList<Message> messages = (ArrayList<Message>) sqs.receiveMessage(receive_request).getMessages();
-        request.setAttribute("messages", messages);
+//        request.setAttribute("messages", messages);
         for (Message m: messages) {
             System.out.println(m.toString());
             DeleteMessageResult result = sqs.deleteMessage(queueUrl, m.getReceiptHandle());
             System.out.println(result.getSdkResponseMetadata());
         }
-        RequestDispatcher rd = request.getRequestDispatcher("list-messages.jsp");
-        try {
-            rd.forward(request, response);
-        } catch (Exception e) {
-            response.sendRedirect("form.jsp");
-        }
+        response.setContentType("application/json");
+        response.getWriter().println(new Gson().toJson(messages));
+//        RequestDispatcher rd = request.getRequestDispatcher("list-messages.jsp");
+
+//        try {
+//            rd.forward(request, response);
+//        } catch (Exception e) {
+//            response.sendRedirect("form.jsp");
+//        }
     }
 
     public void destroy() {
