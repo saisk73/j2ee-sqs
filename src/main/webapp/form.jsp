@@ -23,10 +23,10 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
-        $( document ).ready(function() {
-            $.get( "/demo_war_exploded/list-messages", function( data ) {
+        /* $( document ).ready(function() {
+            $.get( "/demo/list-messages", function( data ) {
                 $( "#data-div" ).empty();
-                for(var obj of data) {
+                for(var obj of data)s {
                     console.log(obj);
                     $( "#data-div" ).append(`
                     <div id="message-${'${'}obj.messageId}" class="d-flex justify-content-between mt-2">
@@ -42,10 +42,10 @@
         });
         function deleteMessage(id) {
             console.log(id);
-            $.get( `/demo_war_exploded/delete-messages/${'${'}id}`, function( data ) {
+            $.get( `/demo/delete-messages/${'${'}id}`, function( data ) {
                 console.log(id)
             });
-        }
+        } */
     </script>
 
 </body>

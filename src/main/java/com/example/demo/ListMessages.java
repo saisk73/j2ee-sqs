@@ -1,8 +1,13 @@
 package com.example.demo;
 
-//aws sqs
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
@@ -11,13 +16,6 @@ import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.DeleteMessageResult;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
-
-import java.io.*;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
-import com.google.gson.*;
 
 
 public class ListMessages extends HttpServlet {
@@ -34,13 +32,19 @@ public class ListMessages extends HttpServlet {
                 .withMaxNumberOfMessages(10);
         ArrayList<Message> messages = (ArrayList<Message>) sqs.receiveMessage(receive_request).getMessages();
 //        request.setAttribute("messages", messages);
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
         for (Message m: messages) {
             System.out.println(m.toString());
             DeleteMessageResult result = sqs.deleteMessage(queueUrl, m.getReceiptHandle());
             System.out.println(result.getSdkResponseMetadata());
+            out.println("<h1>" + m.toString() + "</h1>");
         }
-        response.setContentType("application/json");
-        response.getWriter().println(new Gson().toJson(messages));
+        
+        
+        out.println("</body></html>");
+//        response.setContentType("application/json");
+//        response.getWriter().println(new Gson().toJson(messages));
 //        RequestDispatcher rd = request.getRequestDispatcher("list-messages.jsp");
 
 //        try {
